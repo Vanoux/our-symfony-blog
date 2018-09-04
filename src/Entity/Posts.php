@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,6 +42,16 @@ class Posts
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updated_at;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="post_id", orphanRemoval=true)
+     */
+    private $comment_id;
+
+    public function __construct()
+    {
+        $this->comment_id = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -102,6 +114,37 @@ class Posts
     public function setUpdatedAt(?\DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comments[]
+     */
+    public function getCommentId(): Collection
+    {
+        return $this->comment_id;
+    }
+
+    public function addCommentId(Comments $commentId): self
+    {
+        if (!$this->comment_id->contains($commentId)) {
+            $this->comment_id[] = $commentId;
+            $commentId->setPostId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentId(Comments $commentId): self
+    {
+        if ($this->comment_id->contains($commentId)) {
+            $this->comment_id->removeElement($commentId);
+            // set the owning side to null (unless already changed)
+            if ($commentId->getPostId() === $this) {
+                $commentId->setPostId(null);
+            }
+        }
 
         return $this;
     }
