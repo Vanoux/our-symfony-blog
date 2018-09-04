@@ -67,13 +67,19 @@ class PostsController extends AbstractController
      */
     public function edit(Request $request, Posts $post): Response
     {
-        $form = $this->createForm(PostsType::class, $post);
+        $form = $this->createFormBuilder($post)
+        ->add('title', TextType::class)
+        ->add('author', TextType::class)
+        ->add('content', TextType::class)
+        ->add('save', SubmitType::class, array('label'=>'edit'))
+        ->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $post->setUpdatedAt(new \DateTime('now'));
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('posts_edit', ['id' => $post->getId()]);
+            return $this->redirectToRoute('posts_index');
         }
 
         return $this->render('posts/edit.html.twig', [
