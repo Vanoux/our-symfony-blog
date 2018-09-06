@@ -33,6 +33,9 @@
             </tr>
         </tbody>
     </table>
+    {% for comment in comments %}
+    {{ comment.content }}
+    {% endfor %}
 
     <a href="{{ path('posts_index') }}">back to list</a>
 

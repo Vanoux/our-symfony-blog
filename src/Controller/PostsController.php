@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Posts;
+use App\Entity\Comments;
 use App\Form\PostsType;
 use App\Repository\PostsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,7 +60,12 @@ class PostsController extends AbstractController
      */
     public function show(Posts $post): Response
     {
-        return $this->render('posts/show.html.twig', ['post' => $post]);
+        $repository = $this->getDoctrine()->getRepository(Comments::class); 
+        $comments = $repository->findBy(
+            ['post' => $post->getId()]
+        );
+
+        return $this->render('posts/show.html.twig', ['post' => $post, 'comments' => $comments]);
     }
 
     /**

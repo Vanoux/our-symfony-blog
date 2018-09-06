@@ -50,7 +50,7 @@ class CommentsController extends AbstractController
             $em->persist($comment);
             $em->flush();
 
-            return $this->redirectToRoute('comments_index');
+            return $this->redirectToRoute('posts_show', ['id' => $post->getId()]);
         }
 
         return $this->render('comments/new.html.twig', [
@@ -72,13 +72,17 @@ class CommentsController extends AbstractController
      */
     public function edit(Request $request, Comments $comment): Response
     {
-        $form = $this->createForm(CommentsType::class, $comment);
+        $form = $this->createFormBuilder($comment)
+        ->add('author', TextType::class)
+        ->add('content', TextType::class)
+        ->add('submit', SubmitType::class, array('label'=>'Edit comment'))
+        ->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('comments_edit', ['id' => $comment->getId()]);
+            return $this->redirectToRoute('posts_show', ['id' => $comment->getPost()->getId()]);
         }
 
         return $this->render('comments/edit.html.twig', [
