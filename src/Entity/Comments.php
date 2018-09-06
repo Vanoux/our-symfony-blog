@@ -17,20 +17,20 @@ class Comments
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Posts", inversedBy="comment_id")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $post_id;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $author;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=500)
      */
     private $content;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Posts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $post;
 
     /**
      * @ORM\Column(type="datetime")
@@ -40,18 +40,6 @@ class Comments
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPostId(): ?Posts
-    {
-        return $this->post_id;
-    }
-
-    public function setPostId(?Posts $post_id): self
-    {
-        $this->post_id = $post_id;
-
-        return $this;
     }
 
     public function getAuthor(): ?string
@@ -74,6 +62,18 @@ class Comments
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getPost(): ?Posts
+    {
+        return $this->post;
+    }
+
+    public function setPost(?Posts $post): self
+    {
+        $this->post = $post;
 
         return $this;
     }
